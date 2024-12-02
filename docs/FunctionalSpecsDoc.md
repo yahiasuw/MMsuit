@@ -1,18 +1,22 @@
 # Functional Specification Document
 
-## Overview
-The MMsuit Application is a Python-based GUI tool designed to aid wet-lab researchers, biophysicists, biochemists, and educators study enzyme kinetics using the Michaelis-Menten equation. This tool will be a companion application for conducting enzyme experiments and simulations, providing real-time graphical analysis of various kinetics-related parameters. The application includes two primary functions:
+## Background
+The MMsuit Application is a Python-based GUI tool designed to aid wet-lab researchers, biophysicists, biochemists, and educators in studying enzyme kinetics using the Michaelis-Menten equation. This tool will be a companion application for conducting enzyme experiments and simulations, providing real-time graphical analysis of various kinetics-related parameters. The application includes two primary functions:
 
-1. **inputexperiment()**: The user uploads experimental data (substrate concentration, enzyme concentration, and corresponding reaction rates). The application processes the data and calculates key enzyme kinetic parameters including $K_m$, $V_{max}$, $k_{cat}$, and $t_{1/2}$.
+1. **upload button**: The user uploads experimental data (substrate concentration, enzyme concentration, and corresponding reaction rates). The application processes the data, calculates key enzyme kinetic parameters including $K_m$, $V_{max}$, and plots the Michaelis-Menten curve and Lineweaver-Burk plot.
+.
    
-2. **experimentsimulator()**: The user inputs kinetic parameters like $K_m$, $V_{max}$, etc., and the application simulates enzyme kinetics and generates graphs, including the Michaelis-Menten curve, Lineweaver-Burk plot, and Eadie-Hofstee plot.
+2. **MMsimulator()**: The user inputs kinetic parameters like $K_m$, $V_{max}$, etc., and the application simulates enzyme kinetics and generates graphs, including the Michaelis-Menten curve and Lineweaver-Burk plot.
+
+## User Profile
+Users are expected to be wet-lab scientists who are either Python users who can import the package and use it within their Python workflow or users who are not programmers at all and can use it as a GUI application
 
 ## 1. Application Features
 
 ### 1.1 **User Interface (UI) Overview**
 The GUI will be intuitive, with drag-menu functionality for uploading data files and input fields for manually entering kinetic parameters. The UI will contain:
 
-- **File Upload Interface**: Allows users to upload Excel or CSV files containing experimental data.
+- **File Upload Interface**: Allows users to upload CSV files containing experimental data.
 - **Data Input Fields**: Users can manually input values for various kinetic parameters (e.g., substrate concentration, enzyme concentration, reaction rates, $K_m$, $V_{max}$, etc.).
 - **Results Output**: Displays computed results such as $K_m$, $V_{max}$, $k_{cat}$, and $t_{1/2}$.
 - **Plotting Area**: Provides dynamic plots (Michaelis-Menten curve, Lineweaver-Burk plot, Eadie-Hofstee plot) based on the input or simulated data.
