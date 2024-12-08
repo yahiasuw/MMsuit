@@ -1,0 +1,6 @@
+setuptools~=58.1.0
+numpy
+plotly
+pandas
+scipy
+dash

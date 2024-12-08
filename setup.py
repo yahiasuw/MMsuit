@@ -9,7 +9,6 @@ setup(
         'pandas',
         'dash',
         'scipy',
-        'scikit-learn',
         'plotly',
     ]
 )
