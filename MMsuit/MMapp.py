@@ -1,4 +1,4 @@
-import MMcalc as mm
+import MMsuit.MMcalc as mm
 from dash import dash, dcc, html, Output, Input, State
 import pandas as pd
 import numpy as np
