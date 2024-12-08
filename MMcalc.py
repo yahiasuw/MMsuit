@@ -10,6 +10,8 @@ import plotly.graph_objects as go
 #Define equations
 def MMvelocity(S:float, Km:float, Vmax:float)-> float:
     '''
+    Calculates velocity by computing michaelis Menten equation
+
     Inputs: Michaelis-Menten equation parameters (S, Km, Vmax).
     Output: Velocity for given S
     '''
@@ -17,6 +19,8 @@ def MMvelocity(S:float, Km:float, Vmax:float)-> float:
 
 def kcat(Vmax: float,Et: float) -> float:
     '''
+    Calculates enzyme catalytic constant given maximum velocity and enzyme concentration (Et).
+
     Inputs: Vmax and Et {Enzyme active site concentration}.
     Output: Kcat
     '''
@@ -24,8 +28,10 @@ def kcat(Vmax: float,Et: float) -> float:
 
 def LBfitter(eSV: tuple):
     '''
+    Given substrates and velocity data, the function removes outliers by computing z-score, fits data to Lineweaver-Burk equation and optimizes fitting using sum of squares
+
     Inputs: eSV:(Experimental data) tuple with two arrays (substrate array, velocities array)
-    :return: tuple with two arrays of fitted data (substrate array, velocities array), Km, Vmax,Pearson correlation coefficient(r), p-value(p), standard error(std_err)
+    :return: tuple with two arrays of fitted data (substrate array, velocities array), Km, Vmax, Vmax standard error and Vmax 95% Confidence interval
     '''
     srecep = 1/(eSV[0])
     vrecep = 1/(eSV[1])
@@ -43,26 +49,41 @@ def LBfitter(eSV: tuple):
     # Optimization
     optimized = op.minimize(
         objective,
-        x0=[initial_slope, max(0, initial_intercept)],
+        x0=[initial_slope, max(0, initial_intercept),],
         bounds=bounds
     )
 
     # Extract optimized parameters
-    slope, intercept= optimized.x
+    slope, intercept = optimized.x
 
-    ###
     Vmax = 1 / intercept
     Km = Vmax * slope
-    fittedx = filtered_srecep
+
+    # Calculate Std error (Prof Herbert Recommendation) [I had to do it manually]
+    predicted = slope * srecep + intercept
+    residuals = 1/vrecep - 1/predicted
+    residual_variance = np.sum(residuals ** 2) / (len(srecep) - 2)
+    # Standard error for slope and intercept
+    x_mean = np.mean(1/srecep)
+    Vmax_stderr = np.sqrt(residual_variance * (1 / len(srecep) + x_mean ** 2 / np.sum(((1/srecep) - x_mean) ** 2)))
+    # Confidence Intervals for slope and intercept
+    #minslope95, maxslope95 = x_mean - (slope_stderr * 1.96), x_mean + (slope_stderr * 1.96)
+    minVmax95, maxVmax95 = Vmax - (Vmax_stderr * 1.96), Vmax + (Vmax_stderr * 1.96)
+    ###
+    fittedx = srecep
     fittedx = np.insert(fittedx, [0,0], [-1/Km,0])
     fittedy = (slope*fittedx)+intercept
     fittedLB = (fittedx, fittedy)
-    return fittedLB, Km, Vmax
+    return fittedLB, Km, Vmax , Vmax_stderr, [minVmax95, maxVmax95]
+
 def MMfitter(eSV: tuple):
     '''
+    Fits velocity and substrate data to Michaelis Menten equation and optimizes fitting using sum of squares
+    N.B. the function uses LBfitter to compute an initial guess for Michaelis Menten parameters
     Inputs:
     eSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
-    :return: tuple with two arrays of fitted data (substrate array, velocities array), optimized parameters, covariance of optimized parameters
+    :return: tuple with two arrays of fitted data (substrate array, velocities array), optimized parameters, covariance of optimized parameters,
+    results.success {boolean for the occurance of minimization}, SSR: Minimized sum of squared residuals
     '''
     def residual_sum_of_squares(params):
         Vmax, Km = params
@@ -83,12 +104,15 @@ def MMfitter(eSV: tuple):
 
     # Fitted substrate and velocities using minimized parameters
     fittedSV = (eSV[0], MMvelocity(eSV[0], *popt))
+    SSR = result.fun # The minimized sum of squared residuals
 
-    return fittedSV, popt, result.fun, pcov_curvefit
+    return fittedSV, popt, pcov_curvefit, result.success, SSR
 
 #Plotting functions
 def MMplot(expSV):
     '''
+    A function for interactive plotting of Michaelis Menten equation after fitting using MMfitter.
+
     Inputs: expSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
     returns: Michaelis-Menten plot with experimental and fitted data.
     '''
@@ -102,21 +126,30 @@ def MMplot(expSV):
 
 def MMsimulator(Km:float,Vmax:float):
     '''
+    A function that uses MM velocity to simulate Michaelis-Menten graph for given Km and Vmax
+
     Inputs: Km, Vmax
-    :param Km:
-    :param Vmax:
     :return: simulated Michaelis-Menten plot
     '''
     xsimulate = np.linspace(Km*(0.1),Km*10,100)
     ysimulate = MMvelocity(xsimulate,Km,Vmax)
-    figsimulate = go.Figure()
-    figsimulate.add_trace(go.Scatter(x=xsimulate, y=ysimulate, mode='lines', name='Simulated'))
-    figsimulate.update_layout(title='Michaelis-Menten Plot', xaxis_title='Substrate concentration', yaxis_title='Velocity')
+    LBx = 1/xsimulate
+    LBy = 1/ysimulate
+    simulatedMM = go.Figure()
+    simulatedMM.add_trace(go.Scatter(x=xsimulate, y=ysimulate, mode='lines', name='Simulated'))
+    simulatedMM.update_layout(title='Michaelis-Menten Plot', xaxis_title='Substrate concentration', yaxis_title='Velocity')
+
+    simulatedLB = go.Figure()
+    simulatedLB.add_trace(go.Scatter(x=LBx, y=LBy, mode='lines', name='Simulated'))
+    simulatedLB.update_layout(title='Lineweaver-Burk Plot', xaxis_title='1/Substrate concentration',
+                              yaxis_title='1/Velocity')
     #figsimulate.show()
-    return figsimulate
+    return simulatedMM, simulatedLB
 
 def LBplot(expSV:tuple):
     '''
+    A function for interactive plotting of Lineweaver-Burk plot equation after fitting using LBfitter.
+
     Inputs: expSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
     returns: Lineweaver-Burk plot with experimental and fitted data.
     '''
