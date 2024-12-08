@@ -6,8 +6,27 @@ from scipy import optimize as op
 import numpy as np
 import plotly.graph_objects as go
 
+# Data Handler
+def MMhandler(data):
+    """
+    Validates that both sets in the tuple contain only numeric values anf removes NaNs and corresponding indices from both sets adn aises a ValueError if non-numeric values are found.
 
-#Define equations
+    Input: Substrate Velocity data (tuple): A tuple of two numpy arrays.
+     Returns: tuple: Filtered data with NaNs removed.
+    """
+    # Make sure the input is a tuple with two numpy arrays
+    if not (isinstance(data, tuple) and len(data) == 2):
+        raise ValueError("Input must be a tuple with two numpy arrays.")
+    # Check if any element in both sets is non-numeric
+    if not (np.issubdtype(data[0].dtype, np.number) and np.issubdtype(data[1].dtype, np.number)):
+        raise ValueError("Both sets must contain only numeric values.")
+    # Mask nan entries in both sets
+    mask = ~np.isnan(data[0]) & ~np.isnan(data[1])
+    # Filter
+    filtered_data = (data[0][mask], data[1][mask])
+    return filtered_data
+
+# Define equations
 def MMvelocity(S:float, Km:float, Vmax:float)-> float:
     '''
     Calculates velocity by computing michaelis Menten equation
@@ -33,8 +52,11 @@ def LBfitter(eSV: tuple):
     Inputs: eSV:(Experimental data) tuple with two arrays (substrate array, velocities array)
     :return: tuple with two arrays of fitted data (substrate array, velocities array), Km, Vmax, Vmax standard error and Vmax 95% Confidence interval
     '''
-    srecep = 1/(eSV[0])
-    vrecep = 1/(eSV[1])
+    # Handle data
+    eSV = MMhandler(eSV)
+
+    srecep = 1/(eSV[0]) # substrates
+    vrecep = 1/(eSV[1]) # velocities
     #Calculate zscore to remove outliers (> 2 SD)
     z_scores = stats.zscore(vrecep)
     filtered_vrecep = vrecep[np.abs(z_scores) < 2]
@@ -85,6 +107,8 @@ def MMfitter(eSV: tuple):
     :return: tuple with two arrays of fitted data (substrate array, velocities array), optimized parameters, covariance of optimized parameters,
     results.success {boolean for the occurance of minimization}, SSR: Minimized sum of squared residuals
     '''
+    # Handle data
+    eSV = MMhandler(eSV)
     def residual_sum_of_squares(params):
         Vmax, Km = params
         predicted = MMvelocity(eSV[0], Vmax, Km)
@@ -116,6 +140,9 @@ def MMplot(expSV):
     Inputs: expSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
     returns: Michaelis-Menten plot with experimental and fitted data.
     '''
+    # Handle data
+    expSV = MMhandler(expSV)
+
     figMM = go.Figure()
     figMM.add_trace(go.Scatter(x=expSV[0], y=expSV[1], mode='markers', name='Experimental'))  # Experimental as scatter
     fitted = MMfitter(expSV)
@@ -153,8 +180,11 @@ def LBplot(expSV:tuple):
     Inputs: expSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
     returns: Lineweaver-Burk plot with experimental and fitted data.
     '''
-    srecep = 1 / (expSV[0])
-    vrecep = 1 / (expSV[1])
+    # Handle data
+    expSV = MMhandler(expSV)\
+
+    srecep = 1 / (expSV[0]) # substrats
+    vrecep = 1 / (expSV[1]) # velocities
     figLB = go.Figure()
     figLB.add_trace(go.Scatter(x=srecep, y=vrecep, mode='markers', name='Experimental'))  # Experimental as scatter
     LBfitted = LBfitter(expSV)
