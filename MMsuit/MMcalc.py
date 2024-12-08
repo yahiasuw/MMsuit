@@ -104,7 +104,7 @@ def MMfitter(eSV: tuple):
     N.B. the function uses LBfitter to compute an initial guess for Michaelis Menten parameters
     Inputs:
     eSV: (Experimental data) tuple with two arrays (substrate array, velocities array)
-    :return: tuple with two arrays of fitted data (substrate array, velocities array), optimized parameters, covariance of optimized parameters,
+    :return: tuple with two arrays of fitted data (substrate array, velocities array), optimized parameters (Vmax,Km), covariance of optimized parameters,
     results.success {boolean for the occurance of minimization}, SSR: Minimized sum of squared residuals
     '''
     # Handle data
