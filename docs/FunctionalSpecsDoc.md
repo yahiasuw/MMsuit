@@ -14,12 +14,12 @@ Users are expected to be wet-lab scientists who are either Python users who can 
 ## 1. Application Features
 
 ### 1.1 **User Interface (UI) Overview**
-The GUI will be intuitive, with drag-menu functionality for uploading data files and input fields for manually entering kinetic parameters. The UI will contain:
+The GUI will be intuitive, with two main tabs; one for uploading data files and input fields for manually entering kinetic parameters, the other is for Simulation. The UI will contain:
 
 - **File Upload Interface**: Allows users to upload CSV files containing experimental data.
 - **Data Input Fields**: Users can manually input values for various kinetic parameters (e.g., substrate concentration, enzyme concentration, reaction rates, $K_m$, $V_{max}$, etc.).
 - **Results Output**: Displays computed results such as $K_m$, $V_{max}$, $k_{cat}$, and $t_{1/2}$.
-- **Plotting Area**: Provides dynamic plots (Michaelis-Menten curve, Lineweaver-Burk plot, Eadie-Hofstee plot) based on the input or simulated data.
+- **Plotting Area**: Provides dynamic plots (Michaelis-Menten curve, Lineweaver-Burk plot) based on the input or simulated data.
 
 ### 1.2 **Core Functionality**
 
@@ -67,9 +67,7 @@ The application will include interactive plots that allow users to zoom, pan, an
     
 - **Lineweaver-Burk Plot**:
     - Double reciprocal plot showing the inverse relationship between reaction velocity and substrate concentration.
-    
-- **Eadie-Hofstee Plot**:
-    - A linear plot of reaction velocity ($V$) vs. velocity divided by substrate concentration ($V/[S]$).
+
 
 ### 1.4 **Exporting Results**
 - Users can export their experimental results, kinetic parameters, and simulation data to CSV or Excel formats for further analysis.

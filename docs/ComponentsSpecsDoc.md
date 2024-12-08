@@ -23,7 +23,7 @@
   - MMfitter: *given substrate concentrations and velocities*, fits and minimizes Michaelis-Menten curve and computes Km and Vmax
   - MMplot:  *given substrate concentrations and velocities* plots Michaelis menten plot using Plotly and MMfitter
   - LBplot:  *given substrate concentrations and velocities* plots Lineweaver-Burk plot using Plotly and LBfitter
-  - MMsimulator: *given Vmax and Km* simulates a Michaelis Menten plot using given parameters
+  - MMsimulator: *given Vmax and Km* simulates a Michaelis Menten and Lineweaver-Burk plot using given parameters
 
 ## 3 **Kinetic Calculation Details**
 - **Michaelis-Menten Equation**: The basic form of the equation is:
