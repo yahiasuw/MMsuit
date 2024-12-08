@@ -1,2 +1,2 @@
-from MMapp import MMgui
+from MMsuit import *
 MMgui()
