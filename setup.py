@@ -6,8 +6,6 @@ setup(
     author="Your Name",
     author_email="your-email@example.com",
     description="A package for Michaelis-Menten enzyme kinetics analysis",
-    long_description=open('README.md').read(),  #
-    long_description_content_type="text/markdown",
     url="https://github.com/yahiasuw/MMsuit",
     packages=find_packages(),
     install_requires=[
