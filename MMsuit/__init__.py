@@ -1,2 +1,2 @@
 from MMsuit.MMapp import *
-MMgui()
+from MMsuit.MMcalc import *
