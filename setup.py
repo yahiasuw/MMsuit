@@ -10,5 +10,10 @@ setup(
         'dash',
         'scipy',
         'plotly',
-    ]
+    ],
+    entry_points={
+        "console_scripts": [
+            "MMsuit=MMsuit:MMsuit",  # Update this if you want to provide a CLI
+        ],
+    }
 )
