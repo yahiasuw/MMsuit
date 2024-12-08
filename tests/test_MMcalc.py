@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from MMsuit.MMcalc import *
+from MMcalc import *
 
 # Synthetic good data
 @pytest.fixture

@@ -10,6 +10,6 @@ setup(
         'dash',
         'scipy',
         'scikit-learn',
-        'plotly'
+        'plotly',
     ]
 )
