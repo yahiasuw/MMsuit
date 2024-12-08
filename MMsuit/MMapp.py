@@ -142,9 +142,9 @@ def update_simulated(n_clicks, km, vmax):
 
 
 #Run Dash
-def MMsuit(debug=True, host="127.0.0.1", port=8050):
+def MMgui(debug=True, host="127.0.0.1", port=8050):
     app.run_server(debug=debug, host=host, port=port)
     if __name__ == "__main__":
-        MMsuit()
+        MMgui()
 #MMsuit()
 
