@@ -1,19 +1,35 @@
 from setuptools import setup, find_packages
+
 setup(
-    name='MMsuit',
-    version='0.0.1',
+    name="MMsuit",
+    version="0.0.1",
+    author="Your Name",
+    author_email="your-email@example.com",
+    description="A package for Michaelis-Menten enzyme kinetics analysis",
+    long_description=open('README.md').read(),  #
+    long_description_content_type="text/markdown",
+    url="https://github.com/yahiasuw/MMsuit",
     packages=find_packages(),
-    include_package_data=True,
     install_requires=[
-        'numpy',
-        'pandas',
-        'dash',
-        'scipy',
-        'plotly',
+        "numpy",
+        "scipy",
+        "pandas",
+        "dash",
+        "Flask",
+        "plotly",
+
     ],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.8',
     entry_points={
         "console_scripts": [
-            "MMsuit=MMsuit:MMsuit",  # Update this if you want to provide a CLI
+            "MMsuit=MMsuit:MMsuit",
         ],
     }
 )
+
+
